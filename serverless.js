@@ -1,3 +1,4 @@
+const _ = require('lodash')
 const serverless = require('serverless-http')
 
 const Koa = require('koa')
@@ -25,7 +26,13 @@ function hybridBodyParser () {
   }
 }
 
-module.exports = routerFn => {
+function attachEventHandler (router, eventFn) {
+  router.post('/call', async (ctx, next) => {
+    ctx.body = await eventFn(ctx.request.body)
+  })
+}
+
+function serverlessRouter (routerFn) {
   const app = new Koa()
   const router = new Router({
     prefix: process.env.AWS_LAMBDA_FUNCTION_NAME && '/:fn'
@@ -43,3 +50,7 @@ module.exports = routerFn => {
     googleHandler: app.callback()
   }
 }
+
+module.exports.attachEventHandler = attachEventHandler
+module.exports.router = serverlessRouter
+module.exports.event = eventFn => serverlessRouter(_.partial(attachEventHandler, _, eventFn))

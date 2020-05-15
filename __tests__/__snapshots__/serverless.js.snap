@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`serverless.event 1`] = `
+Object {
+  "event": Object {
+    "test": "event",
+  },
+  "ok": true,
+}
+`;
