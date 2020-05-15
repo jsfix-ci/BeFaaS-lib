@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "standard"
+    "test": "standard",
+    "fix": "standard --fix"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,6 @@
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.3.0",
     "koa-logger": "^3.2.1",
-    "lodash": "^4.17.15",
     "node-fetch": "^2.6.0",
     "serverless-http": "^2.4.1",
     "strip-ansi": "^6.0.0"

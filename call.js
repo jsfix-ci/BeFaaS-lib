@@ -1,13 +1,8 @@
-const _ = require('lodash')
 const fetch = require('node-fetch')
 
-const endpoints = {}
-try {
-  const TFOUTPUT = {} // TODO
-  endpoints.aws = _.get(TFOUTPUT, 'aws_invoke_url.value')
-  endpoints.google = _.get(TFOUTPUT, 'google_invoke_url.value')
-} catch (e) {
-  console.log(e)
+const endpoints = {
+  aws: process.env.AWS_LAMBDA_ENDPOINT,
+  google: process.env.GOOGLE_CLOUDFUNCTION_ENDPOINT
 }
 
 module.exports = async (provider, fn, payload) => {
