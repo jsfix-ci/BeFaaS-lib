@@ -8,3 +8,18 @@ Object {
   "ok": true,
 }
 `;
+
+exports[`serverless.router 1`] = `
+Object {
+  "ok": true,
+}
+`;
+
+exports[`serverless.router 2`] = `
+Object {
+  "event": Object {
+    "test": "event2",
+  },
+  "ok": true,
+}
+`;

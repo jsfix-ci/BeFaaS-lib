@@ -4,10 +4,13 @@ const serverless = require('serverless-http')
 const Koa = require('koa')
 const Router = require('@koa/router')
 const bodyParser = require('koa-bodyparser')
-const logger = require('koa-logger')
-const stripAnsi = require('strip-ansi')
 
 const log = require('./log')
+
+function logger (ctx, next) {
+  log(Object.assign({}, _.pick(ctx, ['method', 'originalUrl', 'headers'])))
+  return next()
+}
 
 async function handleErrors (ctx, next) {
   try {
@@ -26,20 +29,17 @@ function hybridBodyParser () {
   }
 }
 
-function attachEventHandler (router, eventFn) {
-  router.post('/call', async (ctx, next) => {
-    ctx.body = await eventFn(ctx.request.body)
-  })
-}
-
 function serverlessRouter (routerFn) {
   const app = new Koa()
   const router = new Router({
     prefix: process.env.AWS_LAMBDA_FUNCTION_NAME && '/:fn'
   })
 
-  const loggerMW = logger((msg, args) => log({ msg: stripAnsi(msg), args: args.slice(1) }))
-  router.use(loggerMW, handleErrors, hybridBodyParser())
+  router.use(logger, handleErrors, hybridBodyParser())
+  router.attachEventHandler = eventFn => router.post('/call', async (ctx, next) => {
+    ctx.body = await eventFn(ctx.request.body)
+  })
+
   routerFn(router)
 
   app.use(router.routes())
@@ -51,6 +51,5 @@ function serverlessRouter (routerFn) {
   }
 }
 
-module.exports.attachEventHandler = attachEventHandler
 module.exports.router = serverlessRouter
-module.exports.event = eventFn => serverlessRouter(_.partial(attachEventHandler, _, eventFn))
+module.exports.event = eventFn => serverlessRouter(r => r.attachEventHandler(eventFn))
