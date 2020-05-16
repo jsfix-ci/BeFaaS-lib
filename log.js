@@ -1,3 +1,19 @@
-module.exports = (event) => {
-  process.stdout.write(JSON.stringify(event) + '\n')
+const {
+  performance,
+  PerformanceObserver
+} = require('perf_hooks')
+
+function log (event) {
+  process.stdout.write(JSON.stringify({
+    timestamp: new Date().getTime(),
+    now: performance.now(),
+    ...event
+  }) + '\n')
 }
+
+new PerformanceObserver(list => list.getEntries().forEach(perf => log({ perf })))
+  .observe({ entryTypes: ['mark', 'function'] })
+
+log({ coldstart: true })
+
+module.exports = log
