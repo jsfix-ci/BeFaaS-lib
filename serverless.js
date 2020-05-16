@@ -6,6 +6,7 @@ const Router = require('@koa/router')
 const bodyParser = require('koa-bodyparser')
 
 const log = require('./log')
+const helper = require('./helper')
 
 function logger (ctx, next) {
   log(Object.assign({}, _.pick(ctx, ['method', 'originalUrl', 'headers'])))
@@ -24,7 +25,7 @@ async function handleErrors (ctx, next) {
 function hybridBodyParser () {
   const bp = bodyParser()
   return async (ctx, next) => {
-    ctx.request.body = ctx.request.body || ctx.req.body
+    ctx.request.body = helper.isGoogle ? ctx.req.body : ctx.request.body
     return bp(ctx, next)
   }
 }
@@ -32,7 +33,7 @@ function hybridBodyParser () {
 function serverlessRouter (routerFn) {
   const app = new Koa()
   const router = new Router({
-    prefix: process.env.AWS_LAMBDA_FUNCTION_NAME && '/:fn'
+    prefix: helper.isLambda && '/:fn'
   })
 
   router.use(logger, handleErrors, hybridBodyParser())
