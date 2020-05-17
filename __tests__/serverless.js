@@ -3,7 +3,7 @@ const serverless = require('../serverless')
 const request = require('supertest')
 
 test('serverless.event', async () => {
-  const { googleHandler } = serverless.event(async event => ({ ok: true, event }))
+  const { googleHandler } = serverless.rpcHandler(async event => ({ ok: true, event }))
   const response = await request(googleHandler)
     .post('/call')
     .send({ test: 'event' })
@@ -14,7 +14,7 @@ test('serverless.event', async () => {
 test('serverless.router', async () => {
   const { googleHandler } = serverless.router(router => {
     router.get('/', (ctx, next) => { ctx.body = { ok: true } })
-    router.attachEventHandler(async event => ({ ok: true, event }))
+    router.addRpcHandler(async event => ({ ok: true, event }))
   })
   const responseGET = await request(googleHandler)
     .get('/')
