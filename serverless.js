@@ -26,7 +26,8 @@ async function handleErrors (ctx, next) {
 function hybridBodyParser () {
   const bp = bodyParser()
   return async (ctx, next) => {
-    ctx.request.body = helper.isGoogle ? ctx.req.body : ctx.request.body
+    ctx.request.body =
+      helper.isGoogle || helper.isAzure ? ctx.req.body : ctx.request.body
     return bp(ctx, next)
   }
 }

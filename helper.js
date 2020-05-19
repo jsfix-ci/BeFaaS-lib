@@ -7,7 +7,7 @@ const helper = {
 module.exports = {
   prefix: () => {
     if (helper.isLambda) return '/:fn'
-    if (helper.isAzure) return '/:fn'
+    if (helper.isAzure) return '/api/:fn'
     return null
   },
   ...helper
