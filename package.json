@@ -4,8 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "standard && jest",
-    "fix": "standard --fix"
+    "test": "prettier-standard --lint && jest",
+    "format": "prettier-standard --format"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*": "prettier-standard --lint"
   },
   "repository": {
     "type": "git",
@@ -30,7 +38,10 @@
     "serverless-http": "^2.4.1"
   },
   "devDependencies": {
+    "husky": "^4.2.5",
     "jest": "^26.0.1",
+    "lint-staged": "^10.2.4",
+    "prettier-standard": "^16.3.0",
     "standard": "^14.3.4",
     "supertest": "^4.0.2"
   }

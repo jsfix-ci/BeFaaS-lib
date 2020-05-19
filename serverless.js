@@ -38,9 +38,10 @@ function serverlessRouter (routerFn) {
   })
 
   router.use(logger, handleErrors, hybridBodyParser())
-  router.addRpcHandler = handler => router.post('/call', async (ctx, next) => {
-    ctx.body = await handler(ctx.request.body)
-  })
+  router.addRpcHandler = handler =>
+    router.post('/call', async (ctx, next) => {
+      ctx.body = await handler(ctx.request.body)
+    })
 
   routerFn(router)
 
@@ -55,4 +56,5 @@ function serverlessRouter (routerFn) {
 }
 
 module.exports.router = serverlessRouter
-module.exports.rpcHandler = handler => serverlessRouter(r => r.addRpcHandler(handler))
+module.exports.rpcHandler = handler =>
+  serverlessRouter(r => r.addRpcHandler(handler))
