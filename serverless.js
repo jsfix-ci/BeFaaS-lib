@@ -5,6 +5,7 @@ const azure = require('azure-function-express')
 const Koa = require('koa')
 const Router = require('@koa/router')
 const bodyParser = require('koa-bodyparser')
+const qs = require('qs')
 
 const log = require('./log')
 const helper = require('./helper')
@@ -26,6 +27,13 @@ async function handleErrors (ctx, next) {
 function hybridBodyParser () {
   const bp = bodyParser()
   return async (ctx, next) => {
+    if (
+      helper.isAzure &&
+      ctx.request.is('application/x-www-form-urlencoded') &&
+      ctx.req.body
+    ) {
+      ctx.req.body = qs.parse(ctx.req.body, { allowDots: true })
+    }
     ctx.request.body =
       helper.isGoogle || helper.isAzure ? ctx.req.body : ctx.request.body
     return bp(ctx, next)
