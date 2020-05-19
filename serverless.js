@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const serverless = require('serverless-http')
+const azure = require('azure-function-express')
 
 const Koa = require('koa')
 const Router = require('@koa/router')
@@ -48,7 +49,8 @@ function serverlessRouter (routerFn) {
 
   return {
     lambdaHandler: serverless(app),
-    googleHandler: app.callback()
+    googleHandler: app.callback(),
+    azureHandler: azure.createHandler(app.callback())
   }
 }
 

@@ -22,6 +22,7 @@
   "homepage": "https://github.com/FaaSterMetrics/lib#readme",
   "dependencies": {
     "@koa/router": "^8.0.8",
+    "azure-function-express": "^2.0.0",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.3.0",
     "lodash": "^4.17.15",
