@@ -5,6 +5,10 @@ test('isLambda', () => {
   expect(helper.isLambda).toBe(false)
 })
 
-test('iGoogle', () => {
+test('isGoogle', () => {
   expect(helper.isGoogle).toBe(false)
+})
+
+test('prefix', () => {
+  expect(helper.prefix()).toBeNull()
 })

@@ -34,7 +34,7 @@ function hybridBodyParser () {
 function serverlessRouter (routerFn) {
   const app = new Koa()
   const router = new Router({
-    prefix: helper.isLambda && '/:fn'
+    prefix: helper.prefix()
   })
 
   router.use(logger, handleErrors, hybridBodyParser())
