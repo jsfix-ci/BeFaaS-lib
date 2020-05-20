@@ -1,6 +1,7 @@
 module.exports = {
+  log: require('./log'),
+  helper: require('./helper'),
   call: require('./call'),
   serverless: require('./serverless'),
-  log: require('./log'),
   performance: require('./performance')
 }
