@@ -1,3 +1,4 @@
+const fs = require('fs')
 const path = require('path')
 
 const helper = {
@@ -6,18 +7,20 @@ const helper = {
   isAzure: !!process.env.IS_AZURE_FUNCTION_APP
 }
 
-let experiment = {}
-
-try {
-  experiment = require(path.join(process.cwd(), 'experiment.json'))
-} catch (e) {}
-
 module.exports = {
   prefix: () => {
     if (helper.isLambda) return '/:fn'
     if (helper.isAzure) return '/api/:fn'
     return null
   },
-  experiment,
+  loadExperiment: () => {
+    try {
+      return JSON.parse(
+        fs.readFileSync(path.join(process.cwd(), 'experiment.json'), 'UTF-8')
+      )
+    } catch (e) {
+      return {}
+    }
+  },
   ...helper
 }
