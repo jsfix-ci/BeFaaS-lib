@@ -5,6 +5,8 @@ const uniqueFnId = require('crypto')
   .randomBytes(32)
   .toString('hex')
 
+const fnName = process.env.FAASTERMETRICS_FN_NAME
+
 function log (event) {
   process.stdout.write(
     'FAASTERMETRICS' +
@@ -14,7 +16,7 @@ function log (event) {
         version: LIB_VERSION,
         fn: {
           id: uniqueFnId,
-          name: process.env.FAASTERMETRICS_FN_NAME
+          name: fnName
         },
         event
       }) +
