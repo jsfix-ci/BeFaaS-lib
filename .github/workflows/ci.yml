@@ -31,7 +31,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           update-file: package.json
-      - run: rm -f .npmrc
       - run: npm publish
         if: steps.semrel.outputs.version != ''
         env:
