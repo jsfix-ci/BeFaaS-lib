@@ -1,4 +1,4 @@
-# lib
+# FaaSter Metrics Library
 
 ![CI](https://github.com/FaaSterMetrics/lib/workflows/CI/badge.svg)
 
@@ -10,7 +10,7 @@ This repository is licensed under the Apache 2.0 License.
 
 ### Citation
 
-If you use this software (or parts of it) in a published work, please include a citation similar to the following BibTex notice. We will update this entry once we have finished a complete software documentation for our work. 
+If you use this software (or parts of it) in a published work, please include a citation similar to the following BibTex notice. 
 ```bibtex
 @Manual{faasterMetrics2020,
   title = {FaaSter Metrics: An Application-oriented Function as a Service Benchmarking Framework},
@@ -18,7 +18,7 @@ If you use this software (or parts of it) in a published work, please include a 
   organization = {FaaSter Metrics project group},
   address = {Berlin, Germany},
   year = {2020},
-  url = {https://github.com/FaaSterMetrics},
+  url = {https://github.com/FaaSterMetrics/documentation/releases},
 }
 ```
 
