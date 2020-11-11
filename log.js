@@ -2,7 +2,7 @@ const { performance, PerformanceObserver } = require('perf_hooks')
 
 const version = require('./package.json').version
 const deploymentId =
-  process.env.FAASTERMETRICS_DEPLOYMENT_ID || 'unknownDeploymentId'
+  process.env.BEFAAS_DEPLOYMENT_ID || 'unknownDeploymentId'
 
 const uniqueFnId = require('crypto')
   .randomBytes(32)
