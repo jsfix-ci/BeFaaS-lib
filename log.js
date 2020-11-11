@@ -8,7 +8,7 @@ const uniqueFnId = require('crypto')
   .randomBytes(32)
   .toString('hex')
 
-const fnName = process.env.FAASTERMETRICS_FN_NAME || 'unknownFn'
+const fnName = process.env.BEFAAS_FN_NAME || 'unknownFn'
 
 function log (event) {
   process.stdout.write(
