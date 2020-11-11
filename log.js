@@ -12,7 +12,7 @@ const fnName = process.env.BEFAAS_FN_NAME || 'unknownFn'
 
 function log (event) {
   process.stdout.write(
-    'FAASTERMETRICS' +
+    'BEFAAS' +
       JSON.stringify({
         timestamp: new Date().getTime(),
         now: performance.now(),
