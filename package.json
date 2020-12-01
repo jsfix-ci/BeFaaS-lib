@@ -38,7 +38,7 @@
     "lodash": "^4.17.19",
     "node-fetch": "^2.6.0",
     "qs": "^6.9.4",
-    "serverless-http": "2.5.0"
+    "serverless-http": "2.6.0"
   },
   "devDependencies": {
     "husky": "^4.2.5",
