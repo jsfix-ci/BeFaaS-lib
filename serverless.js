@@ -146,11 +146,11 @@ module.exports.rpcHandler = (options, handler) => {
 }
 
 module.exports.snsHandler = (options, handler) => {
-	let dbBindToMeasure = () => undefined
+	const dbBindToMeasure = () => undefined
 	return {
 		lambdaHandler: async (event, ctx) => {
 			logRequestAndAttachContext(ctx, dbBindToMeasure)
-			const end = ctx.lib.measure(`${m}:${r}`)
+			const end = ctx.lib.measure(`SNS`)
 			await handler(event, ctx)
 			end()
 		}
