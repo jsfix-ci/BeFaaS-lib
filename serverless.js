@@ -58,11 +58,6 @@ function logRequestAndAttachContext (ctx, dbBindToMeasure) {
 function logEventAndAttachContext (ctx, dbBindToMeasure) {
   const contextId = helper.generateRandomID()
   const xPair = 'undefined-x-pair'
-  log({
-    contextId,
-    xPair,
-    request: "Some Test")
-  })
   ctx.contextId = contextId
   ctx.xPair = xPair
   ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
