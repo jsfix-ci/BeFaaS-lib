@@ -26,7 +26,7 @@ module.exports = async (fn, contextId, xPair, payload) => {
   var provider = ""
   if (fn === "publisher") {
     console.log("Will call publisher...")
-    functionName = payload.fun
+    var functionName = payload.fun
     provider = _.get(experiment, `program.functions.${functionName}.provider`)
     console.log("provider is " + provider)
 	if (!publisherEndpoints[provider]) throw new Error('unknown publisher provider')
