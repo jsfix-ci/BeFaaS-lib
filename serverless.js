@@ -55,9 +55,9 @@ function logRequestAndAttachContext (ctx, dbBindToMeasure) {
   ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
 }
 
-function logEventAndAttachContext (ctx, dbBindToMeasure) {
-  const contextId = helper.generateRandomID()
-  const xPair = 'undefined-x-pair'
+function logEventAndAttachContext (ctx, event, dbBindToMeasure) {
+  const contextId = event.Records[0].Sns.MessageAttributes.get('contextId') || helper.generateRandomID()
+  const xPair = event.Records[0].Sns.MessageAttributes.get('XPair') || 'undefined-x-pair'
   ctx.contextId = contextId
   ctx.xPair = xPair
   ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
@@ -157,7 +157,7 @@ module.exports.snsHandler = (options, handler) => {
 	const dbBindToMeasure = () => undefined
 	return {
 		lambdaHandler: async (event, ctx) => {
-			logEventAndAttachContext(ctx, dbBindToMeasure)
+			logEventAndAttachContext(ctx, event, dbBindToMeasure)
 			const end = ctx.lib.measure(`SNS`)
 			await handler(event, ctx)
 			end()
