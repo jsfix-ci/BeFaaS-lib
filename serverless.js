@@ -56,6 +56,8 @@ function logRequestAndAttachContext (ctx, dbBindToMeasure) {
 }
 
 function logEventAndAttachContext (ctx, event, dbBindToMeasure) {
+  console.log("ctxEntry: \n" + JSON.stringify(ctx, null, 2));
+  console.log("eventEntry: \n" + JSON.stringify(event, null, 2));
   const contextId = event.Records[0].Sns.MessageAttributes.contextId.get('StringValue') || helper.generateRandomID()
   const xPair = event.Records[0].Sns.MessageAttributes.xPair.get('StringValue') || 'undefined-x-pair'
   
