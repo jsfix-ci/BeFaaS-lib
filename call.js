@@ -15,7 +15,8 @@ const endpoints = {
 }
 
 const publisherEndpoints = {
-  aws: process.env.PUBLISHER_AWS_ENDPOINT
+  aws: process.env.PUBLISHER_AWS_ENDPOINT,
+  google: process.env.PUBLISHER_GOOGLE_ENDPOINT  
 }
 
 module.exports = async (fn, contextId, xPair, payload) => {
