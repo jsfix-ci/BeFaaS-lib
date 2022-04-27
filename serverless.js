@@ -55,9 +55,25 @@ function logRequestAndAttachContext (ctx, dbBindToMeasure) {
   ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
 }
 
+JSON.safeStringify = (obj, indent = 2) => {
+  let cache = [];
+  const retVal = JSON.stringify(
+    obj,
+    (key, value) =>
+      typeof value === "object" && value !== null
+        ? cache.includes(value)
+          ? undefined // Duplicate reference found, discard key
+          : cache.push(value) && value // Store value in our collection
+        : value,
+    indent
+  );
+  cache = null;
+  return retVal;
+};
+
 function logEventAndAttachContext (ctx, event, dbBindToMeasure) {
-  console.log("ctxEntry: \n" + JSON.stringify(ctx, null, 2));
-  console.log("eventEntry: \n" + JSON.stringify(event, null, 2));
+  console.log("ctxEntry: \n" + JSON.safeStringify(ctx, 2));
+  console.log("eventEntry: \n" + JSON.safeStringify(event, 2));
   const contextId = event.Records[0].Sns.MessageAttributes.contextId.Value || helper.generateRandomID()
   const xPair = event.Records[0].Sns.MessageAttributes.xPair.Value || 'undefined-x-pair'
   
