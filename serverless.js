@@ -156,18 +156,18 @@ module.exports.rpcHandler = (options, handler) => {
   return serverlessRouter(options, r => r.addRpcHandler(handler))
 }
 
-module.exports.snsHandler = (options, handler) => {
+module.exports.msgHandler = (options, handler) => {
 	const dbBindToMeasure = () => undefined
 	return {
 		lambdaHandler: async (event, ctx) => {
 			logEventAndAttachContext(ctx, event, dbBindToMeasure)
-			const end = ctx.lib.measure(`SNS`)
+			const end = ctx.lib.measure(`msg`)
 			await handler(event, ctx)
 			end()
 		},
 		googleHandler: async (event, ctx) => {
 			logEventAndAttachContext(ctx, event, dbBindToMeasure)
-			const end = ctx.lib.measure(`SNS`)
+			const end = ctx.lib.measure(`msg`)
 			await handler(event, ctx)
 			end()
 		}
