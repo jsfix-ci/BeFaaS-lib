@@ -164,6 +164,12 @@ module.exports.snsHandler = (options, handler) => {
 			const end = ctx.lib.measure(`SNS`)
 			await handler(event, ctx)
 			end()
+		},
+		googleHandler: async (event, ctx) => {
+			logEventAndAttachContext(ctx, event, dbBindToMeasure)
+			const end = ctx.lib.measure(`SNS`)
+			await handler(event, ctx)
+			end()
 		}
 	}
 }
