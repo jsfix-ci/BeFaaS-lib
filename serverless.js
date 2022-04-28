@@ -55,32 +55,6 @@ function logRequestAndAttachContext (ctx, dbBindToMeasure) {
   ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
 }
 
-JSON.safeStringify = (obj) => {
-  let cache = [];
-  const retVal = JSON.stringify(
-    obj,
-    (key, value) =>
-      typeof value === "object" && value !== null
-        ? cache.includes(value)
-          ? undefined // Duplicate reference found, discard key
-          : cache.push(value) && value // Store value in our collection
-        : value
-  );
-  cache = null;
-  return retVal;
-};
-
-function logEventAndAttachContext (ctx, event, dbBindToMeasure) {
-  console.log("ctxEntry: " + JSON.safeStringify(ctx, 2) + "\n");
-  console.log("eventEntry: " + JSON.safeStringify(event, 2) + "\n");
-  const contextId = event.Records[0].Sns.MessageAttributes.contextId.Value || helper.generateRandomID()
-  const xPair = event.Records[0].Sns.MessageAttributes.xPair.Value || 'undefined-x-pair'
-  
-  ctx.contextId = contextId
-  ctx.xPair = xPair
-  ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
-}
-
 async function handleErrors (ctx, next) {
   try {
     await next()
@@ -175,13 +149,33 @@ module.exports.msgHandler = (options, handler) => {
 	const dbBindToMeasure = () => undefined
 	return {
 		lambdaHandler: async (event, ctx) => {
-			logEventAndAttachContext(ctx, event, dbBindToMeasure)
+			//console.log("ctxEntry: " + JSON.stringify(ctx) + "\n");
+			//console.log("eventEntry: " + JSON.stringify(event) + "\n");
+			const contextId = event.Records[0].Sns.MessageAttributes.contextId.Value || helper.generateRandomID()
+			const xPair = event.Records[0].Sns.MessageAttributes.xPair.Value || 'undefined-x-pair'
+			
+			ctx.contextId = contextId
+			ctx.xPair = xPair
+			ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
+			
 			const end = ctx.lib.measure(`msg`)
 			await handler(event, ctx)
 			end()
 		},
 		googleHandler: async (event, ctx) => {
-			logEventAndAttachContext(ctx, event, dbBindToMeasure)
+			const msg = event.data
+				? Buffer.from(event.data, 'base64').toString()
+				: 'no data';
+
+			console.log("Message: " + msg);
+			
+			const contextId = event.attributes.contextId || helper.generateRandomID()
+			const xPair = event.attributes.xPair || 'undefined-x-pair'
+			
+			ctx.contextId = contextId
+			ctx.xPair = xPair
+			ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
+			
 			const end = ctx.lib.measure(`msg`)
 			await handler(event, ctx)
 			end()
