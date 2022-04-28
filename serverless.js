@@ -149,8 +149,8 @@ module.exports.msgHandler = (options, handler) => {
 	const dbBindToMeasure = () => undefined
 	return {
 		lambdaHandler: async (event, ctx) => {
-			//console.log("ctxEntry: " + JSON.stringify(ctx) + "\n");
-			//console.log("eventEntry: " + JSON.stringify(event) + "\n");
+			// console.log("ctxEntry: " + JSON.stringify(ctx) + "\n");
+			// console.log("eventEntry: " + JSON.stringify(event) + "\n");
 			const contextId = event.Records[0].Sns.MessageAttributes.contextId.Value || helper.generateRandomID()
 			const xPair = event.Records[0].Sns.MessageAttributes.xPair.Value || 'undefined-x-pair'
 			
