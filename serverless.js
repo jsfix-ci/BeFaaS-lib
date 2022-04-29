@@ -163,15 +163,15 @@ module.exports.msgHandler = (options, handler) => {
 			end()
 		},
 		googleHandler: async (event, ctx) => {
-			console.log(JSON.stringify(event))
-			const msg = event.body.message.data
-				? Buffer.from(event.body.message.data, 'base64').toString()
+			console.log("Event: " + JSON.stringify(event))
+			const msg = event.data
+				? Buffer.from(event.data, 'base64').toString()
 				: 'no data';
 
 			console.log("Message: " + msg);
 			
-			const contextId = event.body.message.attributes.contextId || helper.generateRandomID()
-			const xPair = event.body.message.attributes.xPair || 'undefined-x-pair'
+			const contextId = event.attributes.contextId || helper.generateRandomID()
+			const xPair = event.attributes.xPair || 'undefined-x-pair'
 			
 			ctx.contextId = contextId
 			ctx.xPair = xPair
