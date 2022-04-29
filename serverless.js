@@ -167,7 +167,6 @@ module.exports.msgHandler = (options, handler) => {
 			const msg = event.data
 				? Buffer.from(event.data, 'base64').toString()
 				: 'no data';
-
 			console.log("Message: " + msg);
 			
 			const contextId = event.attributes.contextId || helper.generateRandomID()
