@@ -107,7 +107,6 @@ function serverlessRouter (options, routerFn) {
     routerFn = options
     options = {}
   }
-  const app = new Koa()
   const router = new Router({
     prefix: helper.prefix()
   })
