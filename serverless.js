@@ -202,7 +202,6 @@ module.exports.msgHandler = (options, handler) => {
 				prefix: helper.prefix()
 			})
 			let dbBindToMeasure = () => undefined
-			if (options.db) dbBindToMeasure = db.connect(options.db)
 			router.use(handleErrors, hybridBodyParser())
 			
 			console.log("Event: " + JSON.safeStringify(event));
