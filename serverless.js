@@ -197,11 +197,20 @@ module.exports.msgHandler = (options, handler) => {
 			end()
 		},
 		tinyfaasHandler: async (event, ctx) => {
+			
+			const app = new Koa()
+			const router = new Router({
+				prefix: helper.prefix()
+			})
+			let dbBindToMeasure = () => undefined
+			if (options.db) dbBindToMeasure = db.connect(options.db)
+			router.use(handleErrors, hybridBodyParser())
+			
 			console.log("Event: " + JSON.safeStringify(event));
 			console.log("Ctx: " + JSON.safeStringify(ctx));
 			logRequestAndAttachContext(ctx, dbBindToMeasure)
 			const end = ctx.lib.measure(`msg`)
-            await handler(ctx.request.body, ctx.lib)
+            await handler(ctx.request.body, ctx)
 			end()
 		}		
 	}
