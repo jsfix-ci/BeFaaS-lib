@@ -107,6 +107,7 @@ function serverlessRouter (options, routerFn) {
     routerFn = options
     options = {}
   }
+  const app = new Koa()
   const router = new Router({
     prefix: helper.prefix()
   })
@@ -197,7 +198,6 @@ module.exports.msgHandler = (options, handler) => {
 		},
 		tinyfaasHandler: async (event, ctx) => {
 			
-			const app = new Koa()
 			const router = new Router({
 				prefix: helper.prefix()
 			})
