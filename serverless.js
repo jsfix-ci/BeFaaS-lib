@@ -30,7 +30,16 @@ function createContext (contextId, xPair, dbBindToMeasure) {
     call: async (f, payload) => {
       const xPair = `${contextId}-${helper.generateRandomID()}`
       const end = measurement(`rpcOut:${f}:${xPair}`)
-      const res = await call(f, contextId, xPair, payload)
+	  const a = false
+      const res = await call(f, contextId, xPair, payload, a)
+      end()
+      return res
+    },
+	callAsync: async (f, payload) => {
+      const xPair = `${contextId}-${helper.generateRandomID()}`
+      const end = measurement(`rpcOut:${f}:${xPair}`)
+	  const a = true
+      const res = await call(f, contextId, xPair, payload, a)
       end()
       return res
     },
@@ -179,6 +188,13 @@ module.exports.msgHandler = (options, handler) => {
 			const end = ctx.lib.measure(`msg`)
 			await handler(msg, ctx)
 			end()
-		}
+		},
+		tinyfaasHandler: async (event, ctx) => {
+			console.log("Event: " + JSON.stringify(event))
+			logRequestAndAttachContext(ctx, dbBindToMeasure)
+			const end = ctx.lib.measure(`msg`)
+            await handler(ctx.request.body, ctx.lib)
+			end()
+		}		
 	}
 }

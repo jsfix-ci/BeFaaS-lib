@@ -16,10 +16,12 @@ const endpoints = {
 
 const publisherEndpoints = {
   aws: process.env.PUBLISHER_AWS_ENDPOINT,
-  google: process.env.PUBLISHER_GOOGLE_ENDPOINT  
+  google: process.env.PUBLISHER_GOOGLE_ENDPOINT,
+  azure: process.env.PUBLISHER_AZURE_ENDPOINT,
+  tinyfaas: process.env.PUBLISHER_TINYFAAS_ENDPOINT
 }
 
-module.exports = async (fn, contextId, xPair, payload) => {
+module.exports = async (fn, contextId, xPair, payload, a) => {
 
   console.log("fn is: " + fn)
   if (!_.isObject(payload)) throw new Error('payload is not an object')
@@ -49,15 +51,28 @@ module.exports = async (fn, contextId, xPair, payload) => {
     })
     return res.json()
   } else {	  
-    const res = await fetch(`${endpoints[provider]}/${fn}/call`, {
-      method: 'post',
-      body: JSON.stringify(payload || {}),
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Context': contextId,
-        'X-Pair': xPair
-      }
-    })
-    return res.json()
+    if (a) {
+      fetch(`${endpoints[provider]}/${fn}/call`, {
+        method: 'post',
+        body: JSON.stringify(payload || {}),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Context': contextId,
+          'X-Pair': xPair
+        }
+      })
+	  return "{}"
+	} else {
+      const res = await fetch(`${endpoints[provider]}/${fn}/call`, {
+        method: 'post',
+        body: JSON.stringify(payload || {}),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Context': contextId,
+          'X-Pair': xPair
+        }
+      })
+	  return res.json()
+	}    
   }
 }
