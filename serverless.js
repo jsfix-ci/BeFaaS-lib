@@ -55,6 +55,22 @@ function logRequestAndAttachContext (ctx, dbBindToMeasure) {
   ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
 }
 
+JSON.safeStringify = (obj, indent = 2) => {
+  let cache = [];
+  const retVal = JSON.stringify(
+    obj,
+    (key, value) =>
+      typeof value === "object" && value !== null
+        ? cache.includes(value)
+          ? undefined // Duplicate reference found, discard key
+          : cache.push(value) && value // Store value in our collection
+        : value,
+    indent
+  );
+  cache = null;
+  return retVal;
+};
+
 async function handleErrors (ctx, next) {
   try {
     await next()
@@ -181,8 +197,8 @@ module.exports.msgHandler = (options, handler) => {
 			end()
 		},
 		tinyfaasHandler: async (event, ctx) => {
-			console.log("Event: " + event);
-			console.log("ctx: " + ctx);
+			console.log("Event: " + JSON.safeStringify(event));
+			console.log("ctx: " + JSON.safeStringify(ctx));
 			logRequestAndAttachContext(ctx, dbBindToMeasure)
 			const end = ctx.lib.measure(`msg`)
             await handler(ctx.request.body, ctx.lib)
