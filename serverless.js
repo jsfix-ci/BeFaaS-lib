@@ -181,7 +181,7 @@ module.exports.msgHandler = (options, handler) => {
 			end()
 		},
 		tinyfaasHandler: async (event, ctx) => {
-			console.log("Event: " + JSON.stringify(event))
+			// console.log("Event: " + JSON.stringify(event))
 			logRequestAndAttachContext(ctx, dbBindToMeasure)
 			const end = ctx.lib.measure(`msg`)
             await handler(ctx.request.body, ctx.lib)
