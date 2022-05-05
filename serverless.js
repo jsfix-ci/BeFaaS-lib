@@ -30,18 +30,7 @@ function createContext (contextId, xPair, dbBindToMeasure) {
     call: async (f, payload) => {
       const xPair = `${contextId}-${helper.generateRandomID()}`
       const end = measurement(`rpcOut:${f}:${xPair}`)
-	  const a = false
-      const res = await call(f, contextId, xPair, payload, a)
-      end()
-      return res
-    },
-	callAsync: async (f, payload) => {
-	  console.log("In async call")
-      const xPair = `${contextId}-${helper.generateRandomID()}`
-      const end = measurement(`rpcOut:${f}:${xPair}`)
-	  const a = true
-	  console.log("before call in serverless.js")
-      const res = await call(f, contextId, xPair, payload, a)
+      const res = await call(f, contextId, xPair, payload)
       end()
       return res
     },

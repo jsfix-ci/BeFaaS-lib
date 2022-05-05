@@ -21,7 +21,7 @@ const publisherEndpoints = {
   tinyfaas: process.env.PUBLISHER_TINYFAAS_ENDPOINT
 }
 
-module.exports = async (fn, contextId, xPair, payload, a) => {
+module.exports = async (fn, contextId, xPair, payload) => {
 
   console.log("fn is: " + fn)
   if (!_.isObject(payload)) throw new Error('payload is not an object')
@@ -50,9 +50,8 @@ module.exports = async (fn, contextId, xPair, payload, a) => {
       }
     })
     return res.json()
-  } else {	  
-    if (a) {
-      fetch(`${endpoints[provider]}/${fn}/call`, {
+  } else {
+	const res = await fetch(`${endpoints[provider]}/${fn}/call`, {
         method: 'post',
         body: JSON.stringify(payload || {}),
         headers: {
@@ -60,19 +59,7 @@ module.exports = async (fn, contextId, xPair, payload, a) => {
           'X-Context': contextId,
           'X-Pair': xPair
         }
-      })
-	  return "{}"
-	} else {
-      const res = await fetch(`${endpoints[provider]}/${fn}/call`, {
-        method: 'post',
-        body: JSON.stringify(payload || {}),
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Context': contextId,
-          'X-Pair': xPair
-        }
-      })
-	  return res.json()
-	}    
+    })
+	return res.json() 
   }
 }
