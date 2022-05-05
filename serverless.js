@@ -196,7 +196,7 @@ module.exports.msgHandler = (options, handler) => {
 			await handler(msg, ctx)
 			end()
 		},
-		tinyfaasHandler : return serverlessRouter(options, r => r.addRpcHandler(handler))
+		tinyfaasHandler : serverlessRouter(options, r => r.addRpcHandler(handler))
 		
 	}
 }
