@@ -196,13 +196,10 @@ module.exports.msgHandler = (options, handler) => {
 			await handler(msg, ctx)
 			end()
 		},
-		tinyfaasHandler: async (event, ctx) => {
-			console.log("Event: " + JSON.safeStringify(event));
-			console.log("ctx: " + JSON.safeStringify(ctx));
-			logRequestAndAttachContext(ctx, dbBindToMeasure)
-			const end = ctx.lib.measure(`msg`)
-            await handler(ctx.request.body, ctx.lib)
-			end()
-		}		
+		tinyfaasHandler = (options, handler) => {
+			if (_.isUndefined(handler))
+				return serverlessRouter(r => r.addRpcHandler(options))
+			return serverlessRouter(options, r => r.addRpcHandler(handler))
+		}
 	}
 }
