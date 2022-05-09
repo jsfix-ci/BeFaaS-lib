@@ -199,8 +199,7 @@ module.exports.msgHandler = (options, handler) => {
 		azureHandler: azure.createHandler(async (event, ctx) => {
 			console.log("Event: " + JSON.safeStringify(event))
 			console.log("Ctx: " + JSON.safeStringify(ctx))
-			await handler(msg, ctx)
-			end()
+			await handler(event, ctx)
 		}),
 		tinyfaasHandler: ((options, handler) => {
 		  if (_.isUndefined(handler))
