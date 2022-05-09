@@ -165,6 +165,11 @@ module.exports.rpcHandler = (options, handler) => {
 }
 
 module.exports.msgHandler = (options, handler) => {
+	if (_.isFunction(options) && _.isUndefined(handler)) {
+		handler = options
+		options = {}
+	}
+	
 	const dbBindToMeasure = () => undefined
 	return {
 		lambdaHandler: async (event, ctx) => {
