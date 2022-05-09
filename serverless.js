@@ -107,6 +107,9 @@ function serverlessRouter (options, routerFn) {
     routerFn = options
     options = {}
   }
+  console.log("Options: " + JSON.safeStringify(options))
+  console.log("routerFn: " + JSON.safeStringify(routerFn))
+  
   const app = new Koa()
   const router = new Router({
     prefix: helper.prefix()
@@ -201,10 +204,6 @@ module.exports.msgHandler = (options, handler) => {
 			console.log("Ctx: " + JSON.safeStringify(ctx))
 			await handler(event, ctx)
 		}),
-		tinyfaasHandler: ((options, handler) => {
-		  if (_.isUndefined(handler))
-			return serverlessRouter(r => r.addRpcHandler(options)).tinyfaasHandler
-		  return serverlessRouter(options, r => r.addRpcHandler(handler)).tinyfaasHandler
-		})(options, handler)		
+		tinyfaasHandler: _.isUndefined(handler) ? serverlessRouter(r => r.addRpcHandler(options)).tinyfaasHandler : serverlessRouter(options, r => r.addRpcHandler(handler)).tinyfaasHandler,
 	}
 }
