@@ -205,10 +205,10 @@ module.exports.msgHandler = (options, handler) => {
 			end()
 		},
 		azureHandler: async (ctx, event) => {
-			context.log("azureHandler called.");
-			context.log("Subject: " + event.subject);
-			context.log("Time: " + event.eventTime);
-			context.log("Data: " + JSON.stringify(event.data));
+			console.log("azureHandler called.");
+			console.log("Subject: " + event.subject);
+			console.log("Time: " + event.eventTime);
+			console.log("Data: " + JSON.stringify(event.data));
 			
 			const contextId = event.data.contextId || helper.generateRandomID()
 			const xPair = event.data.xPair || 'undefined-x-pair'
