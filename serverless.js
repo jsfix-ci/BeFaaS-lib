@@ -204,10 +204,22 @@ module.exports.msgHandler = (options, handler) => {
 			await handler(msg, ctx)
 			end()
 		},
-		azureHandler: azure.createHandler(async (event, ctx) => {
-			console.log("Event: " + JSON.safeStringify(event))
-			console.log("Ctx: " + JSON.safeStringify(ctx))
-			await handler(event, ctx)
+		azureHandler: async (ctx, event) {
+			context.log("azureHandler called.");
+			context.log("Subject: " + event.subject);
+			context.log("Time: " + event.eventTime);
+			context.log("Data: " + JSON.stringify(event.data));
+			
+			const contextId = event.data.contextId || helper.generateRandomID()
+			const xPair = event.data.xPair || 'undefined-x-pair'
+			
+			ctx.contextId = contextId
+			ctx.xPair = xPair
+			ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
+			
+			const end = ctx.lib.measure(`msg`)
+			await handler(event.data, ctx)
+			end()
 		}),
 		tinyfaasHandler: _.isUndefined(handler) ? serverlessRouter(r => r.addRpcHandler(options)).tinyfaasHandler : serverlessRouter(options, r => r.addRpcHandler(handler)).tinyfaasHandler,
 	}
