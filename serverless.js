@@ -220,7 +220,7 @@ module.exports.msgHandler = (options, handler) => {
 			const end = ctx.lib.measure(`msg`)
 			await handler(event.data.event, ctx)
 			end()
-		}),
+		},
 		tinyfaasHandler: _.isUndefined(handler) ? serverlessRouter(r => r.addRpcHandler(options)).tinyfaasHandler : serverlessRouter(options, r => r.addRpcHandler(handler)).tinyfaasHandler,
 	}
 }
