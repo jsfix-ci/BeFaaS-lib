@@ -55,22 +55,6 @@ function logRequestAndAttachContext (ctx, dbBindToMeasure) {
   ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
 }
 
-JSON.safeStringify = (obj, indent = 2) => {
-  let cache = [];
-  const retVal = JSON.stringify(
-    obj,
-    (key, value) =>
-      typeof value === "object" && value !== null
-        ? cache.includes(value)
-          ? undefined // Duplicate reference found, discard key
-          : cache.push(value) && value // Store value in our collection
-        : value,
-    indent
-  );
-  cache = null;
-  return retVal;
-};
-
 async function handleErrors (ctx, next) {
   try {
     await next()
@@ -107,8 +91,6 @@ function serverlessRouter (options, routerFn) {
     routerFn = options
     options = {}
   }
-  console.log("Options: " + JSON.safeStringify(options))
-  console.log("routerFn: " + JSON.safeStringify(routerFn))
   
   const app = new Koa()
   const router = new Router({
@@ -187,7 +169,7 @@ module.exports.msgHandler = (options, handler) => {
 			end()
 		},
 		googleHandler: async (event, ctx) => {
-			console.log("Event: " + JSON.stringify(event))
+			//console.log("Event: " + JSON.stringify(event))
 			const msg = event.data
 				? Buffer.from(event.data, 'base64').toString()
 				: 'no data';
@@ -205,10 +187,10 @@ module.exports.msgHandler = (options, handler) => {
 			end()
 		},
 		azureHandler: async (ctx, event) => {
-			console.log("azureHandler called.");
-			console.log("Subject: " + event.subject);
-			console.log("Time: " + event.eventTime);
-			console.log("Data: " + JSON.stringify(event.data));
+			//console.log("azureHandler called.");
+			//console.log("Subject: " + event.subject);
+			//console.log("Time: " + event.eventTime);
+			//console.log("Data: " + JSON.stringify(event.data));
 			
 			const contextId = event.data.contextId || helper.generateRandomID()
 			const xPair = event.data.xPair || 'undefined-x-pair'

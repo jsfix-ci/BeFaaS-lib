@@ -23,19 +23,18 @@ const publisherEndpoints = {
 
 module.exports = async (fn, contextId, xPair, payload) => {
 
-  console.log("fn is: " + fn)
   if (!_.isObject(payload)) throw new Error('payload is not an object')
   
   var provider = ""
   if (fn === "publisher") {
-    console.log("Will call publisher...")
+    //console.log("Will call publisher...")
     var functionName = payload.fun
     provider = _.get(experiment, `program.functions.${functionName}.provider`)
-    console.log("provider is " + provider)
+    //console.log("provider is " + provider)
 	if (!publisherEndpoints[provider]) throw new Error('unknown publisher provider')
   } else {
     provider = _.get(experiment, `program.functions.${fn}.provider`)
-    console.log("provider is " + provider)
+    //console.log("provider is " + provider)
     if (!endpoints[provider]) throw new Error('unknown provider')
   } 
   
