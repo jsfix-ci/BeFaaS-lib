@@ -169,7 +169,7 @@ module.exports.msgHandler = (options, handler) => {
 			end()
 		},
 		googleHandler: async (event, ctx) => {
-			//console.log("Event: " + JSON.stringify(event))
+			// console.log("Event: " + JSON.stringify(event))
 			const msg = event.data
 				? Buffer.from(event.data, 'base64').toString()
 				: 'no data';
@@ -187,10 +187,10 @@ module.exports.msgHandler = (options, handler) => {
 			end()
 		},
 		azureHandler: async (ctx, event) => {
-			//console.log("azureHandler called.");
-			//console.log("Subject: " + event.subject);
-			//console.log("Time: " + event.eventTime);
-			//console.log("Data: " + JSON.stringify(event.data));
+			// console.log("azureHandler called.");
+			// console.log("Subject: " + event.subject);
+			// console.log("Time: " + event.eventTime);
+			// console.log("Data: " + JSON.stringify(event.data));
 			
 			const contextId = event.data.contextId || helper.generateRandomID()
 			const xPair = event.data.xPair || 'undefined-x-pair'
