@@ -166,7 +166,7 @@ module.exports.msgHandler = (options, handler) => {
 			ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
 			
 			const end = ctx.lib.measure(`msg`)
-			await handler(event, ctx)
+			await handler(event.Records[0].Sns.Message, ctx)
 			end()
 		},
 		googleHandler: async (event, ctx) => {
