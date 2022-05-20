@@ -152,8 +152,10 @@ module.exports.msgHandler = (options, handler) => {
 		handler = options
 		options = {}
 	}
+		
+	let dbBindToMeasure = () => undefined
+    if (options.db) dbBindToMeasure = db.connect(options.db)
 	
-	const dbBindToMeasure = () => undefined
 	return {
 		lambdaHandler: async (event, ctx) => {
 			console.log("ctxEntry: " + JSON.stringify(ctx));
