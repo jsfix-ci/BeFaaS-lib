@@ -166,7 +166,7 @@ module.exports.msgHandler = (options, handler) => {
 			ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
 			
 			const end = ctx.lib.measure(`msg`)
-			await handler(event.Records[0].Sns.Message, ctx)
+			await handler(JSON.parse(event.Records[0].Sns.Message), ctx)
 			end()
 		},
 		googleHandler: async (event, ctx) => {
@@ -185,7 +185,7 @@ module.exports.msgHandler = (options, handler) => {
 			ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
 			
 			const end = ctx.lib.measure(`msg`)
-			await handler(msg, ctx)
+			await handler(JSON.parse(msg), ctx)
 			end()
 		},
 		azureHandler: async (ctx, event) => {
@@ -200,7 +200,7 @@ module.exports.msgHandler = (options, handler) => {
 			ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
 			
 			const end = ctx.lib.measure(`msg`)
-			await handler(event.data.event, ctx)
+			await handler(JSON.parse(event.data.event), ctx)
 			end()
 		},
 		tinyfaasHandler: _.isUndefined(handler) ? serverlessRouter(r => r.addRpcHandler(options)).tinyfaasHandler : serverlessRouter(options, r => r.addRpcHandler(handler)).tinyfaasHandler,
