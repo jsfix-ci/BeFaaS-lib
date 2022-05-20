@@ -59,6 +59,7 @@ async function handleErrors (ctx, next) {
   try {
     await next()
   } catch (e) {
+	console.log(e.toString())
     ctx.body = { error: e.toString() }
     ctx.status = 502
   }
@@ -155,8 +156,8 @@ module.exports.msgHandler = (options, handler) => {
 	const dbBindToMeasure = () => undefined
 	return {
 		lambdaHandler: async (event, ctx) => {
-			// console.log("ctxEntry: " + JSON.stringify(ctx) + "\n");
-			// console.log("eventEntry: " + JSON.stringify(event) + "\n");
+			console.log("ctxEntry: " + JSON.stringify(ctx));
+			console.log("eventEntry: " + JSON.stringify(event));
 			const contextId = event.Records[0].Sns.MessageAttributes.contextId.Value || helper.generateRandomID()
 			const xPair = event.Records[0].Sns.MessageAttributes.xPair.Value || 'undefined-x-pair'
 			
@@ -169,7 +170,8 @@ module.exports.msgHandler = (options, handler) => {
 			end()
 		},
 		googleHandler: async (event, ctx) => {
-			// console.log("Event: " + JSON.stringify(event))
+			console.log("ctxEntry: " + JSON.stringify(ctx));
+			console.log("eventEntry: " + JSON.stringify(event));
 			const msg = event.data
 				? Buffer.from(event.data, 'base64').toString()
 				: 'no data';
@@ -187,10 +189,8 @@ module.exports.msgHandler = (options, handler) => {
 			end()
 		},
 		azureHandler: async (ctx, event) => {
-			// console.log("azureHandler called.");
-			// console.log("Subject: " + event.subject);
-			// console.log("Time: " + event.eventTime);
-			// console.log("Data: " + JSON.stringify(event.data));
+			console.log("ctxEntry: " + JSON.stringify(ctx));
+			console.log("eventEntry: " + JSON.stringify(event));
 			
 			const contextId = event.data.contextId || helper.generateRandomID()
 			const xPair = event.data.xPair || 'undefined-x-pair'
