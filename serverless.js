@@ -177,8 +177,7 @@ module.exports.msgHandler = (options, handler) => {
 			const msg = event.data
 				? Buffer.from(event.data, 'base64').toString()
 				: 'no data';
-			console.log("Message: " + msg);
-			
+			console.log("Message: " + msg);			
 			const contextId = event.attributes.contextId || helper.generateRandomID()
 			const xPair = event.attributes.xPair || 'undefined-x-pair'
 			
@@ -192,8 +191,7 @@ module.exports.msgHandler = (options, handler) => {
 		},
 		azureHandler: async (ctx, event) => {
 			console.log("ctxEntry: " + JSON.stringify(ctx));
-			console.log("eventEntry: " + JSON.stringify(event));
-			
+			console.log("eventEntry: " + JSON.stringify(event));			
 			const contextId = event.data.contextId || helper.generateRandomID()
 			const xPair = event.data.xPair || 'undefined-x-pair'
 			
