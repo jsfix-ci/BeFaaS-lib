@@ -79,6 +79,7 @@ function hybridBodyParser () {
     ctx.request.body =
       helper.isGoogle ||
       helper.isAzure ||
+      helper.isLambda ||
       helper.isTinyfaas ||
       helper.isOpenfaas
         ? ctx.req.body
