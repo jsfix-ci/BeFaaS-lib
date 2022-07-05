@@ -59,13 +59,14 @@ async function handleErrors (ctx, next) {
   try {
     await next()
   } catch (e) {
-	console.log(e.toString())
+    console.log(e.toString())
     ctx.body = { error: e.toString() }
     ctx.status = 502
   }
 }
 
 function hybridBodyParser () {
+  console.log('in body parser')
   const bp = bodyParser()
   return async (ctx, next) => {
     if (
@@ -73,41 +74,52 @@ function hybridBodyParser () {
       ctx.request.is('application/x-www-form-urlencoded') &&
       ctx.req.body
     ) {
+      console.log('will set req.body')
       ctx.req.body = qs.parse(ctx.req.body, { allowDots: true })
     }
 
     ctx.request.body =
       helper.isGoogle ||
       helper.isAzure ||
-      helper.isLambda ||
       helper.isTinyfaas ||
       helper.isOpenfaas
         ? ctx.req.body
         : ctx.request.body
+
+    console.log('ctx.request.body is ' + JSON.stringify(ctx.request.body))
     return bp(ctx, next)
   }
 }
 
 function serverlessRouter (options, routerFn) {
+  console.log('router: ' + JSON.stringify(routerFn))
+  console.log('options: ' + JSON.stringify(options))
   if (_.isFunction(options) && _.isUndefined(routerFn)) {
     routerFn = options
     options = {}
   }
-  
+
   const app = new Koa()
   const router = new Router({
     prefix: helper.prefix()
   })
+  console.log('app and router initialized.')
 
   let dbBindToMeasure = () => undefined
   if (options.db) dbBindToMeasure = db.connect(options.db)
 
+  console.log('will use hybrifBodyParser.')
   router.use(handleErrors, hybridBodyParser())
+  console.log('done.')
 
   const wrapHandler = (m, r, h) =>
     router[m](r, async (ctx, next) => {
       logRequestAndAttachContext(ctx, dbBindToMeasure)
       const end = ctx.lib.measure(`${m}:${r}`)
+      console.log('will call handler with:')
+      console.log('r: ' + JSON.stringify(r))
+      console.log('m: ' + JSON.stringify(m))
+      console.log('h: ' + JSON.stringify(h))
       await h(ctx, next)
       end()
     })
@@ -128,6 +140,7 @@ function serverlessRouter (options, routerFn) {
       })
   })
 
+  console.log('will use routes and methods.')
   app.use(router.routes())
   app.use(router.allowedMethods())
 
@@ -149,61 +162,66 @@ module.exports.rpcHandler = (options, handler) => {
 }
 
 module.exports.msgHandler = (options, handler) => {
-	if (_.isFunction(options) && _.isUndefined(handler)) {
-		handler = options
-		options = {}
-	}
-		
-	let dbBindToMeasure = () => undefined
-    if (options.db) dbBindToMeasure = db.connect(options.db)
-	
-	return {
-		lambdaHandler: async (event, ctx) => {
-			console.log("ctxEntry: " + JSON.stringify(ctx));
-			console.log("eventEntry: " + JSON.stringify(event));
-			const contextId = event.Records[0].Sns.MessageAttributes.contextId.Value || helper.generateRandomID()
-			const xPair = event.Records[0].Sns.MessageAttributes.xPair.Value || 'undefined-x-pair'
-			
-			ctx.contextId = contextId
-			ctx.xPair = xPair
-			ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
-			
-			const end = ctx.lib.measure(`msg`)
-			await handler(JSON.parse(event.Records[0].Sns.Message), ctx.lib)
-			end()
-		},
-		googleHandler: async (event, ctx) => {
-			console.log("ctxEntry: " + JSON.stringify(ctx));
-			console.log("eventEntry: " + JSON.stringify(event));
-			const msg = event.data
-				? Buffer.from(event.data, 'base64').toString()
-				: 'no data';
-			console.log("Message: " + msg);			
-			const contextId = event.attributes.contextId || helper.generateRandomID()
-			const xPair = event.attributes.xPair || 'undefined-x-pair'
-			
-			ctx.contextId = contextId
-			ctx.xPair = xPair
-			ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
-			
-			const end = ctx.lib.measure(`msg`)
-			await handler(JSON.parse(msg), ctx.lib)
-			end()
-		},
-		azureHandler: async (ctx, event) => {
-			console.log("ctxEntry: " + JSON.stringify(ctx));
-			console.log("eventEntry: " + JSON.stringify(event));			
-			const contextId = event.data.contextId || helper.generateRandomID()
-			const xPair = event.data.xPair || 'undefined-x-pair'
-			
-			ctx.contextId = contextId
-			ctx.xPair = xPair
-			ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
-			
-			const end = ctx.lib.measure(`msg`)
-			await handler(JSON.parse(event.data.event), ctx.lib)
-			end()
-		},
-		tinyfaasHandler: _.isUndefined(handler) ? serverlessRouter(r => r.addRpcHandler(options)).tinyfaasHandler : serverlessRouter(options, r => r.addRpcHandler(handler)).tinyfaasHandler,
-	}
+  if (_.isFunction(options) && _.isUndefined(handler)) {
+    handler = options
+    options = {}
+  }
+
+  let dbBindToMeasure = () => undefined
+  if (options.db) dbBindToMeasure = db.connect(options.db)
+
+  return {
+    lambdaHandler: async (event, ctx) => {
+      console.log('ctxEntry: ' + JSON.stringify(ctx))
+      console.log('eventEntry: ' + JSON.stringify(event))
+      const contextId =
+        event.Records[0].Sns.MessageAttributes.contextId.Value ||
+        helper.generateRandomID()
+      const xPair =
+        event.Records[0].Sns.MessageAttributes.xPair.Value || 'undefined-x-pair'
+
+      ctx.contextId = contextId
+      ctx.xPair = xPair
+      ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
+
+      const end = ctx.lib.measure(`msg`)
+      await handler(JSON.parse(event.Records[0].Sns.Message), ctx.lib)
+      end()
+    },
+    googleHandler: async (event, ctx) => {
+      console.log('ctxEntry: ' + JSON.stringify(ctx))
+      console.log('eventEntry: ' + JSON.stringify(event))
+      const msg = event.data
+        ? Buffer.from(event.data, 'base64').toString()
+        : 'no data'
+      console.log('Message: ' + msg)
+      const contextId = event.attributes.contextId || helper.generateRandomID()
+      const xPair = event.attributes.xPair || 'undefined-x-pair'
+
+      ctx.contextId = contextId
+      ctx.xPair = xPair
+      ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
+
+      const end = ctx.lib.measure(`msg`)
+      await handler(JSON.parse(msg), ctx.lib)
+      end()
+    },
+    azureHandler: async (ctx, event) => {
+      console.log('ctxEntry: ' + JSON.stringify(ctx))
+      console.log('eventEntry: ' + JSON.stringify(event))
+      const contextId = event.data.contextId || helper.generateRandomID()
+      const xPair = event.data.xPair || 'undefined-x-pair'
+
+      ctx.contextId = contextId
+      ctx.xPair = xPair
+      ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
+
+      const end = ctx.lib.measure(`msg`)
+      await handler(JSON.parse(event.data.event), ctx.lib)
+      end()
+    },
+    tinyfaasHandler: _.isUndefined(handler)
+      ? serverlessRouter(r => r.addRpcHandler(options)).tinyfaasHandler
+      : serverlessRouter(options, r => r.addRpcHandler(handler)).tinyfaasHandler
+  }
 }
