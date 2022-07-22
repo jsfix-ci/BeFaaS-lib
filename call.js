@@ -38,7 +38,9 @@ module.exports = async (fn, contextId, xPair, payload) => {
   } 
   
   if (fn === "publisher") {
-    const res = await fetch(`${publisherEndpoints[provider]}/call`, {
+    const res = await /* TODO: JSFIX could not patch the breaking change:
+    req.body can no longer be a string*/
+    fetch(`${publisherEndpoints[provider]}/call`, {
       method: 'post',
       body: JSON.stringify(payload || {}),
       headers: {
@@ -49,7 +51,9 @@ module.exports = async (fn, contextId, xPair, payload) => {
     })
     return res.json()
   } else {
-	const res = await fetch(`${endpoints[provider]}/${fn}/call`, {
+	const res = await /* TODO: JSFIX could not patch the breaking change:
+    req.body can no longer be a string*/
+    fetch(`${endpoints[provider]}/${fn}/call`, {
         method: 'post',
         body: JSON.stringify(payload || {}),
         headers: {
